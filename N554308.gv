@@ -1,14 +1,14 @@
-==> BSFN name
+==> Name
 Business Function: N554308 - NER Interpretador de Regras
 Function Type: NER
-==> BSFN name
-==> Event name
+==> Name
+==> Event
 NER: InterpretaRegra
 Event GUID: aca4d335-66b5-45ff-adc7-25d278596cc5
-==> Event name
-==> DS name
+==> Event
+==> Interface
 Data Structure: D554308A - DS Interpreta Regra
-==> DS name
+==> Interface
 BF szEntradaString [DL011]
 BF mnEntradaNumerico [AEXP]
 BF jdEntradaData [UPMJ]
@@ -16,7 +16,7 @@ BF szOperador [RMK]
 BF szValor [RMK]
 BF cRetorno [EV01]
 BF szTipo [SPHD]
-==> Variables name
+==> Variables
 evt_cSeparador_EV01 [EV01]
 evt_mnPosicao_IA05 [IA05]
 evt_mnTamanho_IA05 [IA05]
@@ -25,7 +25,7 @@ evt_mnValor_AEXP [AEXP]
 evt_mnTamanhoData_IA05 [IA05]
 evt_jdValor_UPMJ [UPMJ]
 evt_szData_DL01 [DL01]
-==> Variables name
+==> Variables
 VA evt_cSeparador_EV01 [EV01] = ","
 VA evt_mnTamanho_IA05 [IA05] = length([BF szValor [RMK]])
 VA evt_mnPosicao_IA05 [IA05] = "0"
@@ -169,17 +169,17 @@ End If
 End If
 End If
 End If
-==> Event name
+==> Event
 NER: OrganizaRegra
 Event GUID: 6bbf44c1-6c65-422c-98c4-9e060957501e
-==> Event name
-==> DS name
+==> Event
+==> Interface
 Data Structure: D554308D - DS Organiza Regra
-==> DS name
+==> Interface
 BF szSupplementalDatabaseCode [SDB]
 BF szTypeofData [TYDT]
 BF jdData [UPMJ]
-==> Variables name
+==> Variables
 evt_mnPosicao_IA05 [IA05]
 evt_szTextRemark_RMK3 [RMK3]
 evt_szOLD_SDB [SDB]
@@ -211,7 +211,7 @@ evt_jdNEW_UPMJ [UPMJ]
 evt_jdOLD_UPMJ [UPMJ]
 evt_mnNEW_UPMT [UPMT]
 evt_mnOLD_UPMT [UPMT]
-==> Variables name
+==> Variables
 VA evt_mnPosicao_IA05 [IA05] = 0
 While VA evt_mnPosicao_IA05 [IA05] is less than or equal to "10000"
 VA evt_szTextRemark_RMK3 [RMK3] = [VA evt_mnPosicao_IA05 [IA05]]
@@ -303,16 +303,16 @@ End If
 End If
 VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]+1
 End While
-==> Event name
+==> Event
 NER: ResolveRegra
 Event GUID: 727fa4bd-0a44-4287-8315-9c6bb453f8c2
-==> Event name
-==> DS name
+==> Event
+==> Interface
 Data Structure: D554308C - DS Resolve Regra
-==> DS name
+==> Interface
 BF szRegra [DL011]
 BF cResultado [EV01]
-==> Variables name
+==> Variables
 evt_cToken_EV01 [EV01]
 evt_mnPosicao_IA05 [IA05]
 evt_mnTamanho_IA05 [IA05]
@@ -324,7 +324,7 @@ evt_cResultado_EV01 [EV01]
 evt_cFechar_EV01 [EV01]
 evt_mnTamExpressao_IA05 [IA05]
 evt_cProximo_EV01 [EV01]
-==> Variables name
+==> Variables
 VA evt_mnPosicao_IA05 [IA05] = 0
 VA evt_mnTamanho_IA05 [IA05] = length([BF szRegra [DL011]])
 VA evt_szExpressao_DL011 [DL011] = <NULL>

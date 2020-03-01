@@ -13,44 +13,51 @@ if os.path.isfile(namefilefgraph):
 filejde   = open(namefilejde ,"r")
 filegraph = open(namefilefgraph,"w+")
 
-stack  = []
-output = []
-tokens = ['If',
+stack   = []
+command = []
+# tokens  = ['If',
+#           'Else',
+#           'End If',
+#           'While',
+#           'End While',
+#           'Or',
+#           'And',
+#           'is equal to',
+#           'is less than',
+#           'is less than or equal',
+#           'is greater than',
+#           'is greater than or equal',
+#           'is not equal to']
+tokens  = ['If',
           'Else',
           'End If',
           'While',
-          'End While',
-          'Or',
-          'And',
-          'is equal to',
-          'is less than',
-          'is less than or equal',
-          'is greater than',
-          'is greater than or equal',
-          'is not equal to']
+          'End While']
+ignore  = ['EVENTS',
+          'Event Level Variables']
 
 for line in filejde:
     str = line.strip()
-    str = re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ ]','',str)
+    str = re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ \']','',str)
     if len(str) > 0 and str != "//" and str[0:1] != "!":
         if len(str) == 81 and str == '-' * 81:
-            stack.append('==> BSFN name')
+            stack.append('==> Name')
         elif len(str) == 45 and str == '=' * 45:
-            stack.append('==> Event name')
+            stack.append('==> Event')
         elif len(str) == 53 and str == '=' * 53:
-            stack.append('==> DS name')
+            stack.append('==> Interface')
         elif len(str) == 40 and str == '-' * 40:
-            stack.append('==> Variables name')
-        elif str in ['EVENTS', 'Event Level Variables']:
+            stack.append('==> Variables')
+        elif str in ignore:
             stack.pop()
         else:
             stack.append(str)
 
 while len(stack) :
-    output.append(stack.pop())
+    command.append(stack.pop())
 
-while len(output) :
-    filegraph.write(output.pop()+"\n")
+while len(command) :
+    filegraph.write(command.pop()+"\n")
 
 filegraph.close()
 filejde.close()
