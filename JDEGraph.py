@@ -5,6 +5,35 @@ import string
 import sys
 import unicodedata
 
+def nodeinitial():
+    filegraph.write('    nodeini [\n')
+    filegraph.write('            shape=circle,\n')
+    filegraph.write('            style="filled",\n')
+    filegraph.write('            fillcolor="white:lightgreen",\n')
+    filegraph.write('            label=""\n')
+    filegraph.write('            ]\n')
+
+def nodefinal():
+    filegraph.write('    nodefin [\n')
+    filegraph.write('            shape=circle,\n')
+    filegraph.write('            style="filled",\n')
+    filegraph.write('            fillcolor="white:#ee636e",\n')
+    filegraph.write('            label=""\n')
+    filegraph.write('            ]\n')
+
+def nodeif(seq,label):
+    label = label.replace(r'"',r"'")
+    label = label.replace(r'>',r"\>")
+    label = label.replace(r'<',r"\<")
+    filegraph.write('    node%s [\n' % (seq))
+    filegraph.write('            fontname="Arial",\n')
+    filegraph.write('            fontsize=6,\n')
+    filegraph.write('            shape=record,\n')
+    filegraph.write('            style="diagonals,filled",\n')
+    filegraph.write('            fillcolor="white:#fbfbb1"\n')
+    filegraph.write('            label="%s|{%s}"\n' % (seq,label))
+    filegraph.write('            ]\n')
+
 namefilejde    = sys.argv[1]
 namefilefgraph = os.path.splitext(sys.argv[1])[0]+".gv"
 
@@ -14,50 +43,83 @@ filejde   = open(namefilejde ,"r")
 filegraph = open(namefilefgraph,"w+")
 
 stack   = []
-command = []
-# tokens  = ['If',
-#           'Else',
-#           'End If',
-#           'While',
-#           'End While',
-#           'Or',
-#           'And',
-#           'is equal to',
-#           'is less than',
-#           'is less than or equal',
-#           'is greater than',
-#           'is greater than or equal',
-#           'is not equal to']
+output  = []
 tokens  = ['If',
           'Else',
           'End If',
           'While',
-          'End While']
+          'End While',
+          'End',
+          'And',
+          'Or']
 ignore  = ['EVENTS',
           'Event Level Variables']
+plsql   = ['Select',
+           'Delete',
+           'Insert',
+           'Update',
+           'FetchNext',
+           'FetchSingle']
+
+sequencial = 1
+
+filegraph.write('digraph R {\n')
+
+nodeinitial()
 
 for line in filejde:
-    str = line.strip()
-    str = re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ \']','',str)
-    if len(str) > 0 and str != "//" and str[0:1] != "!":
-        if len(str) == 81 and str == '-' * 81:
-            stack.append('==> Name')
-        elif len(str) == 45 and str == '=' * 45:
-            stack.append('==> Event')
-        elif len(str) == 53 and str == '=' * 53:
-            stack.append('==> Interface')
-        elif len(str) == 40 and str == '-' * 40:
-            stack.append('==> Variables')
-        elif str in ignore:
-            stack.pop()
-        else:
-            stack.append(str)
+    lineformat = line.strip()
+    lineformat = re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ \']','',lineformat)
+    command    = lineformat.partition(' ')[0]
+    words      = lineformat.count(' ')
+    restline   = lineformat[len(command)+1:10000]
+    sequence   = str(sequencial)
+    sequence   = sequence.rjust(3, '0')
+    if len(lineformat) > 0 and lineformat != "//" and lineformat[0:1] != "!":
+        if len(lineformat) == 81 and lineformat == '-' * 81:
+            # stack.append('==> Name')
+            words = words
+        elif len(lineformat) == 45 and lineformat == '=' * 45:
+            # stack.append('==> Event')
+            words = words
+        elif len(lineformat) == 53 and lineformat == '=' * 53:
+            # stack.append('==> Interface')
+            words = words
+        elif len(lineformat) == 40 and lineformat == '-' * 40:
+            # stack.append('==> Variables')
+            words = words
+        elif lineformat in ignore:
+            # stack.pop()
+            words = words
+        elif command in tokens:
+            if command in ['If', 'Where']:
+                mountline  = restline
+                lastcmd    = command
+            elif command in ['And', 'Or']:
+                mountline += r'\n' + command + r' ' + restline
+            elif lastcmd in ['If', 'Where']:
+                nodeif(sequence, mountline)
+                sequencial += 1
+                lastcmd = ''
+            else:
+                # stack.append(lineformat)
+                words = words
+        elif words < 1:
+            # stack.append(lineformat)
+            words = words
+        # else:
+        #     stack.append(lineformat)
 
 while len(stack) :
-    command.append(stack.pop())
+    output.append(stack.pop())
 
-while len(command) :
-    filegraph.write(command.pop()+"\n")
+while len(output) :
+    filegraph.write(output.pop()+"\n")
+
+nodefinal()
+
+filegraph.write('    nodeini -> node001')
+filegraph.write('}')
 
 filegraph.close()
 filejde.close()

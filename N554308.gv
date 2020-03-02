@@ -1,552 +1,582 @@
-==> Name
-Business Function: N554308 - NER Interpretador de Regras
-Function Type: NER
-==> Name
-==> Event
-NER: InterpretaRegra
-Event GUID: aca4d335-66b5-45ff-adc7-25d278596cc5
-==> Event
-==> Interface
-Data Structure: D554308A - DS Interpreta Regra
-==> Interface
-BF szEntradaString [DL011]
-BF mnEntradaNumerico [AEXP]
-BF jdEntradaData [UPMJ]
-BF szOperador [RMK]
-BF szValor [RMK]
-BF cRetorno [EV01]
-BF szTipo [SPHD]
-==> Variables
-evt_cSeparador_EV01 [EV01]
-evt_mnPosicao_IA05 [IA05]
-evt_mnTamanho_IA05 [IA05]
-evt_szRetorno_DL011 [DL011]
-evt_mnValor_AEXP [AEXP]
-evt_mnTamanhoData_IA05 [IA05]
-evt_jdValor_UPMJ [UPMJ]
-evt_szData_DL01 [DL01]
-==> Variables
-VA evt_cSeparador_EV01 [EV01] = ","
-VA evt_mnTamanho_IA05 [IA05] = length([BF szValor [RMK]])
-VA evt_mnPosicao_IA05 [IA05] = "0"
-VA evt_mnTamanhoData_IA05 [IA05] = 10
-BF cRetorno [EV01] = "0"
-If BF szTipo [SPHD] is equal to "S"
-If BF szOperador [RMK] is equal to "="
-And BF szEntradaString [DL011] is equal to BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<>"
-And BF szEntradaString [DL011] is not equal to BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">"
-And BF szEntradaString [DL011] is greater than BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">="
-And BF szEntradaString [DL011] is greater than or equal to BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<"
-And BF szEntradaString [DL011] is less than BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<="
-And BF szEntradaString [DL011] is less than or equal to BF szValor [RMK]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "IN"
-BF cRetorno [EV01] = "0"
-While VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-BuscaCampoRegistro(N55760Z1.BuscaCampoRegistro)
-VA evt_cSeparador_EV01 [EV01] -> cSeparador_EV01 [EV01]
-VA evt_mnPosicao_IA05 [IA05] <> mnPosicaoInicial_IA05 [IA05]
-VA evt_szRetorno_DL011 [DL011] <- szConteudo_CNLS [CNLS]
-BF szValor [RMK] -> szRegistro_TXVC [TXVC]
-If VA evt_szRetorno_DL011 [DL011] is equal to BF szEntradaString [DL011]
-BF cRetorno [EV01] = "1"
-End If
-End While
-Else
-If BF szOperador [RMK] is equal to "NOT IN"
-BF cRetorno [EV01] = "1"
-While VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-BuscaCampoRegistro(N55760Z1.BuscaCampoRegistro)
-VA evt_cSeparador_EV01 [EV01] -> cSeparador_EV01 [EV01]
-VA evt_mnPosicao_IA05 [IA05] <> mnPosicaoInicial_IA05 [IA05]
-VA evt_szRetorno_DL011 [DL011] <- szConteudo_CNLS [CNLS]
-BF szValor [RMK] -> szRegistro_TXVC [TXVC]
-If VA evt_szRetorno_DL011 [DL011] is equal to BF szEntradaString [DL011]
-BF cRetorno [EV01] = "0"
-End If
-End While
-Else
-BF cRetorno [EV01] = "0"
-End If
-End If
-End If
-End If
-End If
-End If
-End If
-End If
-End If
-If BF szTipo [SPHD] is equal to "N"
-VA evt_mnValor_AEXP [AEXP] = [BF szValor [RMK]]
-If BF szOperador [RMK] is equal to "="
-And BF mnEntradaNumerico [AEXP] is equal to VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<>"
-And BF mnEntradaNumerico [AEXP] is not equal to VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">"
-And BF mnEntradaNumerico [AEXP] is greater than VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">="
-And BF mnEntradaNumerico [AEXP] is greater than or equal to VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<"
-And BF mnEntradaNumerico [AEXP] is less than VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<="
-And BF mnEntradaNumerico [AEXP] is less than or equal to VA evt_mnValor_AEXP [AEXP]
-BF cRetorno [EV01] = "1"
-Else
-BF cRetorno [EV01] = "0"
-End If
-End If
-End If
-End If
-End If
-End If
-End If
-If BF szTipo [SPHD] is equal to "D"
-If VA evt_mnTamanho_IA05 [IA05] is less than VA evt_mnTamanhoData_IA05 [IA05]
-VA evt_szData_DL01 [DL01] = substr([BF szValor [RMK]], "0", "6")
-VA evt_szData_DL01 [DL01] = concat([VA evt_szData_DL01 [DL01]], "20")
-VA evt_szData_DL01 [DL01] = concat([VA evt_szData_DL01 [DL01]], substr([BF szValor [RMK]], "6", "2"))
-Else
-VA evt_szData_DL01 [DL01] = BF szValor [RMK]
-End If
-ConvertStringtoDate_76(B76B050.ConvertStringtoDate_76)
-VA evt_szData_DL01 [DL01] -> szStringToConvert [VC10A]
-VA evt_jdValor_UPMJ [UPMJ] <- jdDateConverted [DRQJ]
-If BF szOperador [RMK] is equal to "="
-And BF jdEntradaData [UPMJ] is equal to VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<>"
-And BF jdEntradaData [UPMJ] is not equal to VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">"
-And BF jdEntradaData [UPMJ] is greater than VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to ">="
-And BF jdEntradaData [UPMJ] is greater than or equal to VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<"
-And BF jdEntradaData [UPMJ] is less than VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-If BF szOperador [RMK] is equal to "<="
-And BF jdEntradaData [UPMJ] is less than or equal to VA evt_jdValor_UPMJ [UPMJ]
-BF cRetorno [EV01] = "1"
-Else
-BF cRetorno [EV01] = "0"
-End If
-End If
-End If
-End If
-End If
-End If
-End If
-==> Event
-NER: OrganizaRegra
-Event GUID: 6bbf44c1-6c65-422c-98c4-9e060957501e
-==> Event
-==> Interface
-Data Structure: D554308D - DS Organiza Regra
-==> Interface
-BF szSupplementalDatabaseCode [SDB]
-BF szTypeofData [TYDT]
-BF jdData [UPMJ]
-==> Variables
-evt_mnPosicao_IA05 [IA05]
-evt_szTextRemark_RMK3 [RMK3]
-evt_szOLD_SDB [SDB]
-evt_szOLD_TYDT [TYDT]
-evt_szNEW_TYDT [TYDT]
-evt_szNEW_SDB [SDB]
-evt_jdOLD_EFT [EFT]
-evt_jdNEW_EFT [EFT]
-evt_jdOLD_EFTE [EFTE]
-evt_jdNEW_EFTE [EFTE]
-evt_szOLD_RMK3 [RMK3]
-evt_szNEW_RMK3 [RMK3]
-evt_szOLD_RMK [RMK]
-evt_szNEW_RMK [RMK]
-evt_szOLD_KY [KY]
-evt_szNEW_KY [KY]
-evt_szOLD_RMK2 [RMK2]
-evt_szNEW_RMK2 [RMK2]
-evt_mnOLD_UKID [UKID]
-evt_mnNEW_UKID [UKID]
-evt_mnUniqueKeyIDInternal_UKID [UKID]
-evt_szOLD_USER [USER]
-evt_szNEW_USER [USER]
-evt_szOLD_PID [PID]
-evt_szNEW_PID [PID]
-evt_szNEW_JOBN [JOBN]
-evt_szOLD_JOBN [JOBN]
-evt_jdNEW_UPMJ [UPMJ]
-evt_jdOLD_UPMJ [UPMJ]
-evt_mnNEW_UPMT [UPMT]
-evt_mnOLD_UPMT [UPMT]
-==> Variables
-VA evt_mnPosicao_IA05 [IA05] = 0
-While VA evt_mnPosicao_IA05 [IA05] is less than or equal to "10000"
-VA evt_szTextRemark_RMK3 [RMK3] = [VA evt_mnPosicao_IA05 [IA05]]
-F00092.Select  [Index 2: SuppDB]
-BF szSupplementalDatabaseCode [SDB] = TK Supplemental Database Code [SDB]
-BF szTypeofData [TYDT] = TK Type Data [TYDT]
-BF jdData [UPMJ] >= TK Date - Effective [EFT]
-BF jdData [UPMJ] <= TK Date - Ending Effective [EFTE]
-VA evt_szTextRemark_RMK3 [RMK3] = TK Text Remark [RMK3]
-F00092.FetchNext  [Index 2: SuppDB]
-VA evt_szOLD_SDB [SDB] <- TK Supplemental Database Code [SDB]
-VA evt_szOLD_TYDT [TYDT] <- TK Type Data [TYDT]
-VA evt_mnOLD_UKID [UKID] <- TK Unique Key ID (Internal) [UKID]
-VA evt_jdOLD_EFT [EFT] <- TK Date - Effective [EFT]
-VA evt_szOLD_KY [KY] <- TK User Defined Code [KY]
-VA evt_jdOLD_EFTE [EFTE] <- TK Date - Ending Effective [EFTE]
-VA evt_szOLD_RMK [RMK] <- TK Name - Remark [RMK]
-VA evt_szOLD_RMK2 [RMK2] <- TK Name - Remark [RMK2]
-VA evt_szOLD_USER [USER] <- TK User ID [USER]
-VA evt_szOLD_PID [PID] <- TK Program ID [PID]
-VA evt_szOLD_JOBN [JOBN] <- TK Work Station ID [JOBN]
-VA evt_jdOLD_UPMJ [UPMJ] <- TK Date - Updated [UPMJ]
-VA evt_mnOLD_UPMT [UPMT] <- TK Time of Day [TDAY]
-VA evt_szOLD_RMK3 [RMK3] <- TK Text Remark [RMK3]
-If SV File_IO_Status is equal to CO SUCCESS
-VA evt_mnNEW_UKID [UKID] = VA evt_mnOLD_UKID [UKID]
-F00092.Select  [Index 2: SuppDB]
-BF szSupplementalDatabaseCode [SDB] = TK Supplemental Database Code [SDB]
-BF szTypeofData [TYDT] = TK Type Data [TYDT]
-BF jdData [UPMJ] >= TK Date - Effective [EFT]
-BF jdData [UPMJ] <= TK Date - Ending Effective [EFTE]
-VA evt_szTextRemark_RMK3 [RMK3] <= TK Text Remark [RMK3]
-F00092.FetchNext  [Index 2: SuppDB]
-VA evt_mnUniqueKeyIDInternal_UKID [UKID] <- TK Unique Key ID (Internal) [UKID]
-While SV File_IO_Status is equal to CO SUCCESS
-If VA evt_mnUniqueKeyIDInternal_UKID [UKID] is less than VA evt_mnNEW_UKID [UKID]
-VA evt_mnNEW_UKID [UKID] = VA evt_mnUniqueKeyIDInternal_UKID [UKID]
-End If
-F00092.FetchNext  [Index 2: SuppDB]
-VA evt_mnUniqueKeyIDInternal_UKID [UKID] <- TK Unique Key ID (Internal) [UKID]
-End While
-F00092.FetchSingle  [Index 5: UniqueID]
-VA evt_szNEW_SDB [SDB] <- TK Supplemental Database Code [SDB]
-VA evt_szNEW_TYDT [TYDT] <- TK Type Data [TYDT]
-VA evt_mnNEW_UKID [UKID] = TK Unique Key ID (Internal) [UKID]
-VA evt_jdNEW_EFT [EFT] <- TK Date - Effective [EFT]
-VA evt_szNEW_KY [KY] <- TK User Defined Code [KY]
-VA evt_jdNEW_EFTE [EFTE] <- TK Date - Ending Effective [EFTE]
-VA evt_szNEW_RMK [RMK] <- TK Name - Remark [RMK]
-VA evt_szNEW_RMK2 [RMK2] <- TK Name - Remark [RMK2]
-VA evt_szNEW_USER [USER] <- TK User ID [USER]
-VA evt_szNEW_PID [PID] <- TK Program ID [PID]
-VA evt_szNEW_JOBN [JOBN] <- TK Work Station ID [JOBN]
-VA evt_jdNEW_UPMJ [UPMJ] <- TK Date - Updated [UPMJ]
-VA evt_mnNEW_UPMT [UPMT] <- TK Time of Day [TDAY]
-VA evt_szNEW_RMK3 [RMK3] <- TK Text Remark [RMK3]
-If VA evt_mnNEW_UKID [UKID] is not equal to VA evt_mnOLD_UKID [UKID]
-F00092.Update  [Index 5: UniqueID]
-VA evt_szNEW_SDB [SDB] -> TK Supplemental Database Code [SDB]
-VA evt_szNEW_TYDT [TYDT] -> TK Type Data [TYDT]
-VA evt_mnOLD_UKID [UKID] = TK Unique Key ID (Internal) [UKID]
-VA evt_jdNEW_EFT [EFT] -> TK Date - Effective [EFT]
-VA evt_szNEW_KY [KY] -> TK User Defined Code [KY]
-VA evt_jdNEW_EFTE [EFTE] -> TK Date - Ending Effective [EFTE]
-VA evt_szNEW_RMK [RMK] -> TK Name - Remark [RMK]
-VA evt_szNEW_RMK2 [RMK2] -> TK Name - Remark [RMK2]
-VA evt_szNEW_USER [USER] -> TK User ID [USER]
-VA evt_szNEW_PID [PID] -> TK Program ID [PID]
-VA evt_szNEW_JOBN [JOBN] -> TK Work Station ID [JOBN]
-VA evt_jdNEW_UPMJ [UPMJ] -> TK Date - Updated [UPMJ]
-VA evt_mnNEW_UPMT [UPMT] -> TK Time of Day [TDAY]
-VA evt_szNEW_RMK3 [RMK3] -> TK Text Remark [RMK3]
-F00092.Update  [Index 5: UniqueID]
-VA evt_szOLD_SDB [SDB] -> TK Supplemental Database Code [SDB]
-VA evt_szOLD_TYDT [TYDT] -> TK Type Data [TYDT]
-VA evt_mnNEW_UKID [UKID] = TK Unique Key ID (Internal) [UKID]
-VA evt_jdOLD_EFT [EFT] -> TK Date - Effective [EFT]
-VA evt_szOLD_KY [KY] -> TK User Defined Code [KY]
-VA evt_jdOLD_EFTE [EFTE] -> TK Date - Ending Effective [EFTE]
-VA evt_szOLD_RMK [RMK] -> TK Name - Remark [RMK]
-VA evt_szOLD_RMK2 [RMK2] -> TK Name - Remark [RMK2]
-VA evt_szOLD_USER [USER] -> TK User ID [USER]
-VA evt_szOLD_PID [PID] -> TK Program ID [PID]
-VA evt_szOLD_JOBN [JOBN] -> TK Work Station ID [JOBN]
-VA evt_jdOLD_UPMJ [UPMJ] -> TK Date - Updated [UPMJ]
-VA evt_mnOLD_UPMT [UPMT] -> TK Time of Day [TDAY]
-VA evt_szOLD_RMK3 [RMK3] -> TK Text Remark [RMK3]
-End If
-End If
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]+1
-End While
-==> Event
-NER: ResolveRegra
-Event GUID: 727fa4bd-0a44-4287-8315-9c6bb453f8c2
-==> Event
-==> Interface
-Data Structure: D554308C - DS Resolve Regra
-==> Interface
-BF szRegra [DL011]
-BF cResultado [EV01]
-==> Variables
-evt_cToken_EV01 [EV01]
-evt_mnPosicao_IA05 [IA05]
-evt_mnTamanho_IA05 [IA05]
-evt_szExpressao_DL011 [DL011]
-evt_mnInicio_IA05 [IA05]
-evt_szNovo_DL011 [DL011]
-evt_cPegou_EV01 [EV01]
-evt_cResultado_EV01 [EV01]
-evt_cFechar_EV01 [EV01]
-evt_mnTamExpressao_IA05 [IA05]
-evt_cProximo_EV01 [EV01]
-==> Variables
-VA evt_mnPosicao_IA05 [IA05] = 0
-VA evt_mnTamanho_IA05 [IA05] = length([BF szRegra [DL011]])
-VA evt_szExpressao_DL011 [DL011] = <NULL>
-While VA evt_mnTamanho_IA05 [IA05] is greater than "1"
-VA evt_cToken_EV01 [EV01] = substr([BF szRegra [DL011]], [VA evt_mnPosicao_IA05 [IA05]], "1")
-If VA evt_cToken_EV01 [EV01] is equal to "("
-VA evt_szExpressao_DL011 [DL011] = "("
-Else
-VA evt_szExpressao_DL011 [DL011] = concat([VA evt_szExpressao_DL011 [DL011]], [VA evt_cToken_EV01 [EV01]])
-End If
-VA evt_cPegou_EV01 [EV01] = "N"
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O0A"
-VA evt_szExpressao_DL011 [DL011] = "0A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O1A"
-VA evt_szExpressao_DL011 [DL011] = "1A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O0A"
-VA evt_szExpressao_DL011 [DL011] = "0A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O1A"
-VA evt_szExpressao_DL011 [DL011] = "1A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O0A"
-VA evt_szExpressao_DL011 [DL011] = "0A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O1A"
-VA evt_szExpressao_DL011 [DL011] = "1A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O0A"
-VA evt_szExpressao_DL011 [DL011] = "0A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O1A"
-VA evt_szExpressao_DL011 [DL011] = "1A"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O0O"
-VA evt_szExpressao_DL011 [DL011] = "0O0"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O1O"
-VA evt_szExpressao_DL011 [DL011] = "0O1"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O0O"
-VA evt_szExpressao_DL011 [DL011] = "1O0"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O1O"
-VA evt_szExpressao_DL011 [DL011] = "1O1"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0A0O"
-Or VA evt_szExpressao_DL011 [DL011] is equal to "(0A0A"
-VA evt_szExpressao_DL011 [DL011] = "0A0"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0A1O"
-Or VA evt_szExpressao_DL011 [DL011] is equal to "(0A1A"
-VA evt_szExpressao_DL011 [DL011] = "0A1"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1A0O"
-Or VA evt_szExpressao_DL011 [DL011] is equal to "(1A0A"
-VA evt_szExpressao_DL011 [DL011] = "1A0"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1A1O"
-Or VA evt_szExpressao_DL011 [DL011] is equal to "(1A1A"
-VA evt_szExpressao_DL011 [DL011] = "1A1"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]-1
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0A0)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1A0)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0A1)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1A1)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O0)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O0)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0O1)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1O1)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(1)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "(0)"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "S"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0A0"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1A0"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0A1"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1A1"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O0O"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O0O"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O1O"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O1O"
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O0"
-And VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "0"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O0"
-And VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "0O1"
-And VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_szExpressao_DL011 [DL011] is equal to "1O1"
-And VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-VA evt_cPegou_EV01 [EV01] = "S"
-VA evt_cResultado_EV01 [EV01] = "1"
-VA evt_cFechar_EV01 [EV01] = "N"
-End If
-If VA evt_cPegou_EV01 [EV01] is equal to "S"
-VA evt_mnTamExpressao_IA05 [IA05] = length([VA evt_szExpressao_DL011 [DL011]])
-VA evt_mnInicio_IA05 [IA05] = ([VA evt_mnPosicao_IA05 [IA05]]+1)-[VA evt_mnTamExpressao_IA05 [IA05]]
-If VA evt_mnInicio_IA05 [IA05] is greater than "0"
-VA evt_szNovo_DL011 [DL011] = substr([BF szRegra [DL011]], "0", [VA evt_mnInicio_IA05 [IA05]])
-Else
-VA evt_szNovo_DL011 [DL011] = <NULL>
-End If
-VA evt_szNovo_DL011 [DL011] = concat([VA evt_szNovo_DL011 [DL011]], [VA evt_cResultado_EV01 [EV01]])
-If VA evt_cFechar_EV01 [EV01] is equal to "S"
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]+1
-End If
-VA evt_mnTamanho_IA05 [IA05] = length([BF szRegra [DL011]])-1
-If VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]
-If VA evt_cToken_EV01 [EV01] is equal to ")"
-VA evt_szNovo_DL011 [DL011] = concat([VA evt_szNovo_DL011 [DL011]], substr([BF szRegra [DL011]], [VA evt_mnPosicao_IA05 [IA05]], "100"))
-Else
-VA evt_szNovo_DL011 [DL011] = concat([VA evt_szNovo_DL011 [DL011]], substr([BF szRegra [DL011]], ([VA evt_mnPosicao_IA05 [IA05]]+1), "100"))
-End If
-Else
-VA evt_cProximo_EV01 [EV01] = substr([BF szRegra [DL011]], [VA evt_mnPosicao_IA05 [IA05]], "1")
-If VA evt_cProximo_EV01 [EV01] is equal to ")"
-VA evt_szNovo_DL011 [DL011] = concat([VA evt_szNovo_DL011 [DL011]], substr([BF szRegra [DL011]], [VA evt_mnPosicao_IA05 [IA05]], "100"))
-End If
-End If
-BF szRegra [DL011] = VA evt_szNovo_DL011 [DL011]
-VA evt_mnTamanho_IA05 [IA05] = length([BF szRegra [DL011]])
-VA evt_mnPosicao_IA05 [IA05] = -1
-VA evt_szExpressao_DL011 [DL011] = <NULL>
-End If
-VA evt_mnPosicao_IA05 [IA05] = [VA evt_mnPosicao_IA05 [IA05]]+1
-If VA evt_mnPosicao_IA05 [IA05] is greater than "100"
-VA evt_mnTamanho_IA05 [IA05] = 0
-End If
-End While
-If VA evt_mnTamanho_IA05 [IA05] is equal to "0"
-BF cResultado [EV01] = "E"
-Else
-BF cResultado [EV01] = substr([BF szRegra [DL011]], "0", "1")
-End If
+digraph R {
+    nodeini [
+            shape=circle,
+            style="filled",
+            fillcolor="white:lightgreen",
+            label=""
+            ]
+    node001 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="001|{BF szOperador [RMK] is equal to '='\nAnd BF szEntradaString [DL011] is equal to BF szValor [RMK]}"
+            ]
+    node002 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="002|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF szEntradaString [DL011] is not equal to BF szValor [RMK]}"
+            ]
+    node003 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="003|{BF szOperador [RMK] is equal to '\>'\nAnd BF szEntradaString [DL011] is greater than BF szValor [RMK]}"
+            ]
+    node004 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="004|{BF szOperador [RMK] is equal to '\>='\nAnd BF szEntradaString [DL011] is greater than or equal to BF szValor [RMK]}"
+            ]
+    node005 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="005|{BF szOperador [RMK] is equal to '\<'\nAnd BF szEntradaString [DL011] is less than BF szValor [RMK]}"
+            ]
+    node006 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="006|{BF szOperador [RMK] is equal to '\<='\nAnd BF szEntradaString [DL011] is less than or equal to BF szValor [RMK]}"
+            ]
+    node007 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="007|{BF szOperador [RMK] is equal to 'IN'}"
+            ]
+    node008 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="008|{VA evt_szRetorno_DL011 [DL011] is equal to BF szEntradaString [DL011]}"
+            ]
+    node009 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="009|{BF szOperador [RMK] is equal to 'NOT IN'}"
+            ]
+    node010 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="010|{VA evt_szRetorno_DL011 [DL011] is equal to BF szEntradaString [DL011]}"
+            ]
+    node011 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="011|{BF szOperador [RMK] is equal to '='\nAnd BF mnEntradaNumerico [AEXP] is equal to VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node012 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="012|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF mnEntradaNumerico [AEXP] is not equal to VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node013 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="013|{BF szOperador [RMK] is equal to '\>'\nAnd BF mnEntradaNumerico [AEXP] is greater than VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node014 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="014|{BF szOperador [RMK] is equal to '\>='\nAnd BF mnEntradaNumerico [AEXP] is greater than or equal to VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node015 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="015|{BF szOperador [RMK] is equal to '\<'\nAnd BF mnEntradaNumerico [AEXP] is less than VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node016 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="016|{BF szOperador [RMK] is equal to '\<='\nAnd BF mnEntradaNumerico [AEXP] is less than or equal to VA evt_mnValor_AEXP [AEXP]}"
+            ]
+    node017 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="017|{VA evt_mnTamanho_IA05 [IA05] is less than VA evt_mnTamanhoData_IA05 [IA05]}"
+            ]
+    node018 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="018|{BF szOperador [RMK] is equal to '='\nAnd BF jdEntradaData [UPMJ] is equal to VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node019 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="019|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF jdEntradaData [UPMJ] is not equal to VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node020 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="020|{BF szOperador [RMK] is equal to '\>'\nAnd BF jdEntradaData [UPMJ] is greater than VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node021 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="021|{BF szOperador [RMK] is equal to '\>='\nAnd BF jdEntradaData [UPMJ] is greater than or equal to VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node022 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="022|{BF szOperador [RMK] is equal to '\<'\nAnd BF jdEntradaData [UPMJ] is less than VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node023 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="023|{BF szOperador [RMK] is equal to '\<='\nAnd BF jdEntradaData [UPMJ] is less than or equal to VA evt_jdValor_UPMJ [UPMJ]}"
+            ]
+    node024 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="024|{SV File_IO_Status is equal to CO SUCCESS}"
+            ]
+    node025 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="025|{VA evt_mnUniqueKeyIDInternal_UKID [UKID] is less than VA evt_mnNEW_UKID [UKID]}"
+            ]
+    node026 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="026|{VA evt_mnNEW_UKID [UKID] is not equal to VA evt_mnOLD_UKID [UKID]}"
+            ]
+    node027 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="027|{VA evt_cToken_EV01 [EV01] is equal to '('}"
+            ]
+    node028 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="028|{VA evt_szExpressao_DL011 [DL011] is equal to '0O0A'}"
+            ]
+    node029 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="029|{VA evt_szExpressao_DL011 [DL011] is equal to '0O1A'}"
+            ]
+    node030 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="030|{VA evt_szExpressao_DL011 [DL011] is equal to '1O0A'}"
+            ]
+    node031 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="031|{VA evt_szExpressao_DL011 [DL011] is equal to '1O1A'}"
+            ]
+    node032 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="032|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O0A'}"
+            ]
+    node033 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="033|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O1A'}"
+            ]
+    node034 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="034|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O0A'}"
+            ]
+    node035 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="035|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O1A'}"
+            ]
+    node036 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="036|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O0O'}"
+            ]
+    node037 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="037|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O1O'}"
+            ]
+    node038 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="038|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O0O'}"
+            ]
+    node039 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="039|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O1O'}"
+            ]
+    node040 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="040|{VA evt_szExpressao_DL011 [DL011] is equal to '(0A0O'\nOr VA evt_szExpressao_DL011 [DL011] is equal to '(0A0A'}"
+            ]
+    node041 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="041|{VA evt_szExpressao_DL011 [DL011] is equal to '(0A1O'\nOr VA evt_szExpressao_DL011 [DL011] is equal to '(0A1A'}"
+            ]
+    node042 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="042|{VA evt_szExpressao_DL011 [DL011] is equal to '(1A0O'\nOr VA evt_szExpressao_DL011 [DL011] is equal to '(1A0A'}"
+            ]
+    node043 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="043|{VA evt_szExpressao_DL011 [DL011] is equal to '(1A1O'\nOr VA evt_szExpressao_DL011 [DL011] is equal to '(1A1A'}"
+            ]
+    node044 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="044|{VA evt_szExpressao_DL011 [DL011] is equal to '(0A0)'}"
+            ]
+    node045 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="045|{VA evt_szExpressao_DL011 [DL011] is equal to '(1A0)'}"
+            ]
+    node046 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="046|{VA evt_szExpressao_DL011 [DL011] is equal to '(0A1)'}"
+            ]
+    node047 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="047|{VA evt_szExpressao_DL011 [DL011] is equal to '(1A1)'}"
+            ]
+    node048 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="048|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O0)'}"
+            ]
+    node049 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="049|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O0)'}"
+            ]
+    node050 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="050|{VA evt_szExpressao_DL011 [DL011] is equal to '(0O1)'}"
+            ]
+    node051 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="051|{VA evt_szExpressao_DL011 [DL011] is equal to '(1O1)'}"
+            ]
+    node052 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="052|{VA evt_szExpressao_DL011 [DL011] is equal to '(1)'}"
+            ]
+    node053 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="053|{VA evt_szExpressao_DL011 [DL011] is equal to '(0)'}"
+            ]
+    node054 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="054|{VA evt_szExpressao_DL011 [DL011] is equal to '0A0'}"
+            ]
+    node055 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="055|{VA evt_szExpressao_DL011 [DL011] is equal to '1A0'}"
+            ]
+    node056 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="056|{VA evt_szExpressao_DL011 [DL011] is equal to '0A1'}"
+            ]
+    node057 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="057|{VA evt_szExpressao_DL011 [DL011] is equal to '1A1'}"
+            ]
+    node058 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="058|{VA evt_szExpressao_DL011 [DL011] is equal to '0O0O'}"
+            ]
+    node059 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="059|{VA evt_szExpressao_DL011 [DL011] is equal to '1O0O'}"
+            ]
+    node060 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="060|{VA evt_szExpressao_DL011 [DL011] is equal to '0O1O'}"
+            ]
+    node061 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="061|{VA evt_szExpressao_DL011 [DL011] is equal to '1O1O'}"
+            ]
+    node062 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="062|{VA evt_szExpressao_DL011 [DL011] is equal to '0O0'\nAnd VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]}"
+            ]
+    node063 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="063|{VA evt_szExpressao_DL011 [DL011] is equal to '1O0'\nAnd VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]}"
+            ]
+    node064 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="064|{VA evt_szExpressao_DL011 [DL011] is equal to '0O1'\nAnd VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]}"
+            ]
+    node065 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="065|{VA evt_szExpressao_DL011 [DL011] is equal to '1O1'\nAnd VA evt_mnPosicao_IA05 [IA05] is less than VA evt_mnTamanho_IA05 [IA05]}"
+            ]
+    node066 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="066|{VA evt_mnInicio_IA05 [IA05] is greater than '0'}"
+            ]
+    node067 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="067|{VA evt_cFechar_EV01 [EV01] is equal to 'S'}"
+            ]
+    node068 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="068|{VA evt_cToken_EV01 [EV01] is equal to ')'}"
+            ]
+    node069 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="069|{VA evt_cProximo_EV01 [EV01] is equal to ')'}"
+            ]
+    node070 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="070|{VA evt_mnPosicao_IA05 [IA05] is greater than '100'}"
+            ]
+    node071 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="071|{VA evt_mnTamanho_IA05 [IA05] is equal to '0'}"
+            ]
+    nodefin [
+            shape=circle,
+            style="filled",
+            fillcolor="white:#ee636e",
+            label=""
+            ]
+    nodeini -> node001}
