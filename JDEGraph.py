@@ -5,11 +5,54 @@ import string
 import sys
 import unicodedata
 
+namefilejde    = sys.argv[1]
+namefilefgraph = os.path.splitext(sys.argv[1])[0]+".gv"
+
+if os.path.isfile(namefilefgraph):
+    os.remove(namefilefgraph)
+filejde   = open(namefilejde ,"r")
+filegraph = open(namefilefgraph,"w+")
+
+stack      = []
+connects   = []
+output     = []
+tokens     = ['If',
+             'Else',
+             'End If',
+             'While',
+             'End While',
+             'End',
+             'And',
+             'Or']
+ignore     = ['EVENTS',
+             'Event Level Variables']
+plsql      = ['Select',
+              'Delete',
+              'Insert',
+              'Update',
+              'FetchNext',
+              'FetchSingle']
+sequencial = 1
+seqnamelst = 'nodeini'
+mountline  = ''
+lastcmd    = ''
+
+
 def preparestring(label):
     label = label.replace(r'"',r"'")
     label = label.replace(r'>',r"\>")
     label = label.replace(r'<',r"\<")
     return label
+
+def lastnode(sequence,command,mountline):
+    if command in ['If', 'Where']:
+        global sequencial
+        global seqnamelst
+        global lastcmd
+        nodeif(sequence, mountline)
+        sequencial += 1
+        lastcmd = ''
+        seqnamelst = seqname
 
 def nodeinitial():
     filegraph.write('    nodeini [\n')
@@ -38,39 +81,7 @@ def nodeif(seq,label):
     filegraph.write('            label="%s|{%s}"\n' % (seq,label))
     filegraph.write('            ]\n')
 
-namefilejde    = sys.argv[1]
-namefilefgraph = os.path.splitext(sys.argv[1])[0]+".gv"
-
-if os.path.isfile(namefilefgraph):
-    os.remove(namefilefgraph)
-filejde   = open(namefilejde ,"r")
-filegraph = open(namefilefgraph,"w+")
-
-stack    = []
-connects = []
-output   = []
-tokens   = ['If',
-           'Else',
-           'End If',
-           'While',
-           'End While',
-           'End',
-           'And',
-           'Or']
-ignore   = ['EVENTS',
-           'Event Level Variables']
-plsql    = ['Select',
-            'Delete',
-            'Insert',
-            'Update',
-            'FetchNext',
-            'FetchSingle']
-
-sequencial = 1
-
 filegraph.write('digraph R {\n')
-
-seqnamelst = 'nodeini'
 
 nodeinitial()
 
@@ -101,8 +112,9 @@ for line in filejde:
             words = words
         elif command in tokens:
             if command in ['If', 'Where']:
-                mountline  = restline
-                lastcmd    = command
+                lastnode(sequence,lastcmd,mountline)
+                mountline = restline
+                lastcmd   = command
                 connects.append('    %s -> %s' % (seqnamelst,seqname))
             elif command in ['And', 'Or']:
                 mountline += r'\n' + command + r' ' + restline
@@ -132,6 +144,7 @@ filegraph.write('\n')
 
 connects.append('    %s -> nodefin' % (seqnamelst))
 
+connects.reverse()
 while len(connects) :
     filegraph.write(connects.pop()+"\n")
 
