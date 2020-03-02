@@ -1,0 +1,99 @@
+digraph R {
+    nodeini [
+            shape=circle,
+            style="filled",
+            fillcolor="white:lightgreen",
+            label=""
+            ]
+    node000 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="000|{\nVA evt_cSeparador_EV01 [EV01] = ','\nVA evt_mnTamanho_IA05 [IA05] = length([BF szValor [RMK]])\nVA evt_mnPosicao_IA05 [IA05] = '0'\nVA evt_mnTamanhoData_IA05 [IA05] = 10\nBF cRetorno [EV01] = '0'}"
+            ]
+    node001 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="001|{BF szTipo [SPHD] is equal to 'S'}"
+            ]
+    node002 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="002|{BF szOperador [RMK] is equal to '='\nAnd BF szEntradaString [DL011] is equal to BF szValor [RMK]}"
+            ]
+    node003 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="003|{cRetorno [EV01] = '1'}"
+            ]
+    node004 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="004|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF szEntradaString [DL011] is not equal to BF szValor [RMK]}"
+            ]
+    node005 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="005|{cRetorno [EV01] = '2'}"
+            ]
+    node006 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="006|{cRetorno [EV01] = '3'}"
+            ]
+    node007 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="007|{}"
+            ]
+    node008 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="008|{}"
+            ]
+    nodefin [
+            shape=circle,
+            style="filled",
+            fillcolor="white:#ee636e",
+            label=""
+            ]
+
+    nodeini -> node000
+    node000 -> node001 [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]
+    node001 -> node002 [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]
+    node002 -> node003
+    node003 -> node003 [fontname = "Arial", fontsize = 12, fontcolor="red", color="red:yellow:red", label="Nao"]
+    node003 -> node004 [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]
+    node004 -> node005
+    node001 -> node005 [fontname = "Arial", fontsize = 12, fontcolor="red", color="red:yellow:red", label="Nao"]
+    node005 -> node006
+    node006 -> node007
+    node007 -> node008
+    node008 -> nodefin
+}
