@@ -5,6 +5,12 @@ import string
 import sys
 import unicodedata
 
+def preparestring(label):
+    label = label.replace(r'"',r"'")
+    label = label.replace(r'>',r"\>")
+    label = label.replace(r'<',r"\<")
+    return label
+
 def nodeinitial():
     filegraph.write('    nodeini [\n')
     filegraph.write('            shape=circle,\n')
@@ -22,9 +28,7 @@ def nodefinal():
     filegraph.write('            ]\n')
 
 def nodeif(seq,label):
-    label = label.replace(r'"',r"'")
-    label = label.replace(r'>',r"\>")
-    label = label.replace(r'<',r"\<")
+    label = preparestring(label)
     filegraph.write('    node%s [\n' % (seq))
     filegraph.write('            fontname="Arial",\n')
     filegraph.write('            fontsize=6,\n')
@@ -42,28 +46,31 @@ if os.path.isfile(namefilefgraph):
 filejde   = open(namefilejde ,"r")
 filegraph = open(namefilefgraph,"w+")
 
-stack   = []
-output  = []
-tokens  = ['If',
-          'Else',
-          'End If',
-          'While',
-          'End While',
-          'End',
-          'And',
-          'Or']
-ignore  = ['EVENTS',
-          'Event Level Variables']
-plsql   = ['Select',
-           'Delete',
-           'Insert',
-           'Update',
-           'FetchNext',
-           'FetchSingle']
+stack    = []
+connects = []
+output   = []
+tokens   = ['If',
+           'Else',
+           'End If',
+           'While',
+           'End While',
+           'End',
+           'And',
+           'Or']
+ignore   = ['EVENTS',
+           'Event Level Variables']
+plsql    = ['Select',
+            'Delete',
+            'Insert',
+            'Update',
+            'FetchNext',
+            'FetchSingle']
 
 sequencial = 1
 
 filegraph.write('digraph R {\n')
+
+seqnamelst = 'nodeini'
 
 nodeinitial()
 
@@ -75,6 +82,7 @@ for line in filejde:
     restline   = lineformat[len(command)+1:10000]
     sequence   = str(sequencial)
     sequence   = sequence.rjust(3, '0')
+    seqname    = 'node%s' % (sequence)
     if len(lineformat) > 0 and lineformat != "//" and lineformat[0:1] != "!":
         if len(lineformat) == 81 and lineformat == '-' * 81:
             # stack.append('==> Name')
@@ -95,12 +103,14 @@ for line in filejde:
             if command in ['If', 'Where']:
                 mountline  = restline
                 lastcmd    = command
+                connects.append('    %s -> %s' % (seqnamelst,seqname))
             elif command in ['And', 'Or']:
                 mountline += r'\n' + command + r' ' + restline
             elif lastcmd in ['If', 'Where']:
                 nodeif(sequence, mountline)
                 sequencial += 1
                 lastcmd = ''
+                seqnamelst = seqname
             else:
                 # stack.append(lineformat)
                 words = words
@@ -110,15 +120,21 @@ for line in filejde:
         # else:
         #     stack.append(lineformat)
 
-while len(stack) :
-    output.append(stack.pop())
+# while len(stack) :
+#     output.append(stack.pop())
 
-while len(output) :
-    filegraph.write(output.pop()+"\n")
+# while len(output) :
+#     filegraph.write(output.pop()+"\n")
 
 nodefinal()
 
-filegraph.write('    nodeini -> node001')
+filegraph.write('\n')
+
+connects.append('    %s -> nodefin' % (seqnamelst))
+
+while len(connects) :
+    filegraph.write(connects.pop()+"\n")
+
 filegraph.write('}')
 
 filegraph.close()
