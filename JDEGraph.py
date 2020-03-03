@@ -15,59 +15,63 @@ if os.path.isfile(namefilefgraph):
 filejde   = open(namefilejde ,"r")
 filegraph = open(namefilefgraph,"w+")
 
-stack      = []
-connects   = []
-output     = []
-qif        = []
-qwhere     = []
-tokens     = ['If',
-             'Else',
-             'End If',
-             'While',
-             'End While',
-             'End',
-             'And',
-             'Or']
-ignore     = ['EVENTS',
-             'Event Level Variables']
-plsql      = ['Select',
-              'Delete',
-              'Insert',
-              'Update',
-              'FetchNext',
-              'FetchSingle']
-sequencial = 0
-seqnamelst = 'nodeini'
-mountline  = ''
-lastcmd    = ''
+stack     = []
+connects  = []
+output    = []
+qif       = []
+qwhere    = []
+values    = ['','','','',0,'',0]
+valuesant = ['','','','',0,'',0]
+tokens    = ['If',
+            'Else',
+            'End If',
+            'While',
+            'End While',
+            'And',
+            'Or']
+ignore    = ['EVENTS',
+            'Event Level Variables']
+plsql     = ['Select',
+             'Delete',
+             'Insert',
+             'Update',
+             'FetchNext',
+             'FetchSingle']
+values[0] = ''        # node
+values[1] = 'nodeini' # lastnode
+values[2] = ''        # cmd
+values[3] = ''        # lastcmd
+values[4] = 1         # sequencial
+values[5] = ''        # texto
+values[6] = 0         # words
+
+def mountvalues(node,lastnode,cmd,lastcmd,sequencial,texto,words):
+    values[0] = node
+    values[1] = lastnode
+    values[2] = cmd
+    values[3] = lastcmd
+    values[4] = sequencial
+    values[5] = texto
+    values[6] = words
+
+def formatline(line):
+    lineformat = line.strip()
+    return re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ \']','',lineformat)
+
+def linecommand(line):
+    word = line.partition(' ')[0]
+    if word == 'End':
+        word = word + ' ' + line.partition(' ')[2]
+    return word
+
+def restline(command,line):
+    return line[len(command)+1:10000]
 
 def preparestring(label):
     label = label.replace(r'"',r"'")
     label = label.replace(r'>',r"\>")
     label = label.replace(r'<',r"\<")
     return label
-
-def lastnode(sequence,command,mountline):
-    if command in ['If']:
-        nodeif(sequence, mountline)
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]' % (seqnamelst,seqname))
-        return(seqname)
-    elif command in ['Where']:
-        nodeif(sequence, mountline)
-        connects.append('    %s -> %s' % (seqnamelst,seqname))
-        return(seqname)
-    elif command in ['Else']:
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="red", color="red:yellow:red", label="Nao"]' % (qif.pop(),seqname))
-        return(seqname)
-    elif command in ['End Where']:
-        connects.append('    %s -> %s' % (qwhere.pop(),seqname))
-        return(seqname)
-    else:
-        nodeattrib(sequence, mountline)
-        connects.append('    %s -> %s' % (seqnamelst,seqname))
-        return(seqname)
-    print('---> ' + command + ' - ' + mountline + '|' + seqnamelst + ' -> ' + seqname)
-    return(seqnamelst)
 
 def nodeinitial():
     filegraph.write('    nodeini [\n')
@@ -87,7 +91,7 @@ def nodefinal():
 
 def nodeif(seq,label):
     label = preparestring(label)
-    filegraph.write('    node%s [\n' % (seq))
+    filegraph.write('    %s [\n' % (seq))
     filegraph.write('            fontname="Arial",\n')
     filegraph.write('            fontsize=6,\n')
     filegraph.write('            shape=record,\n')
@@ -98,7 +102,7 @@ def nodeif(seq,label):
 
 def nodeattrib(seq,label):
     label = preparestring(label)
-    filegraph.write('    node%s [\n' % (seq))
+    filegraph.write('    %s [\n' % (seq))
     filegraph.write('            fontname="Arial",\n')
     filegraph.write('            fontsize=6,\n')
     filegraph.write('            shape=record,\n')
@@ -107,92 +111,68 @@ def nodeattrib(seq,label):
     filegraph.write('            label="%s|{%s}"\n' % (seq,label))
     filegraph.write('            ]\n')
 
+def printnode(args):
+    if args[3] == 'If' and args[2] not in ['And','Or']:
+        nodeif(args[0],args[5])
+        args[1] = args[0]
+        args[4] += 1
+
 filegraph.write('digraph R {\n')
 
 nodeinitial()
 
 for line in filejde:
-    lineformat = line.strip()
-    lineformat = re.sub(r'[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"!#$%&()*+,-./:;<=>?@[\]^_`{|}~ \']','',lineformat)
-    command    = lineformat.partition(' ')[0]
-    if command == 'End':
-        command    = command + ' ' + lineformat.partition(' ')[2]
-    words      = lineformat.count(' ')
-    restline   = lineformat[len(command)+1:10000]
-    sequence   = str(sequencial)
-    sequence   = sequence.rjust(3, '0')
-    seqname    = 'node%s' % (sequence)
+    if values[3] in ['If','Where'] and values[2] in ['And','Or']:
+        values[3] = values[3]
+    else:
+        values[3] = values[2]
 
-    if len(lineformat) > 0 and lineformat != "//" and lineformat[0:1] != "!":
-        if len(lineformat) == 81 and lineformat == '-' * 81:
-            # stack.append('==> Name')
-            words = words
-        elif len(lineformat) == 45 and lineformat == '=' * 45:
-            # stack.append('==> Event')
-            words = words
-        elif len(lineformat) == 53 and lineformat == '=' * 53:
-            # stack.append('==> Interface')
-            words = words
-        elif len(lineformat) == 40 and lineformat == '-' * 40:
-            # stack.append('==> Variables')
-            words = words
-        elif len(lineformat) == 2 and lineformat == '//':
-            # stack.append('==> Espace')
-            words = words
-        elif lineformat in ignore:
-            # stack.pop()
-            words = words
-        elif command not in tokens:
-            if lastcmd in tokens:
-                seqnamelst = lastnode(sequence,lastcmd,mountline)
-                sequencial += 1
-                mountline  =  restline
-                lastcmd    =  ''
+    lineatual = formatline(line)
+    values[2] = linecommand(lineatual)
+
+    printnode(values)
+
+    values[6] = lineatual.count(' ')
+    values[0] = 'node%s' % (str(values[4]).rjust(3, '0'))
+
+    if len(lineatual) > 2 and lineatual[0:1] != "!":
+        if len(lineatual) == 81 and lineatual == '-' * 81:
+            sequence = str(values[4])
+        elif len(lineatual) == 45 and lineatual == '=' * 45:
+            sequence = str(values[4])
+        elif len(lineatual) == 53 and lineatual == '=' * 53:
+            sequence = str(values[4])
+        elif len(lineatual) == 40 and lineatual == '-' * 40:
+            sequence = str(values[4])
+        elif len(lineatual) == 2 and lineatual == '//':
+            sequence = str(values[4])
+        elif lineatual in ignore:
+            sequence = str(values[4])
+        elif values[2] in tokens:
+            if values[2] in ['If']:
+                values[5] = restline(values[2],lineatual)
+                print(values)
+            elif values[2] in ['Else']:
+                values[5] = ''
+                print(values)
+            elif values[2] in ['And','Or']:
+                values[5]  += r'\n' + lineatual
+                print(values)
+            elif values[2] in ['Enf If']:
+                values[5] = ''
+                print(values)
             else:
-                mountline  += r'\n' + command + r' ' + restline
-                lastcmd    =  ''
-        elif command in tokens:
-            print('|' + lastcmd.ljust(6, ' ') + ' -> ' + command.ljust(6, ' '))
-            if command in ['If']:
-                qif.append(seqname)
-                seqnamelst = lastnode(sequence,lastcmd,mountline)
-                sequencial += 1
-                mountline  =  restline
-                lastcmd    =  command
-            elif command in ['Where']:
-                qwhere.append(seqname)
-                seqnamelst = lastnode(sequence,lastcmd,mountline)
-                sequencial += 1
-                mountline  =  restline
-                lastcmd    =  command
-            elif command in ['Else']:
-                seqnamelst = lastnode(sequence,lastcmd,mountline)
-                mountline  =  ''
-                lastcmd    =  command
-            elif command in ['And','Or']:
-                mountline  += r'\n' + command + r' ' + restline
-            else:
-                seqnamelst = lastnode(sequence,lastcmd,mountline)
-                sequencial += 1
-                mountline = ''
-                lastcmd   = ''
-        elif words < 1:
-            # stack.append(lineformat)
-            words = words
-        # else:
-        #     stack.append(lineformat)
-
-# while len(stack) :
-#     output.append(stack.pop())
-
-# while len(output) :
-#     filegraph.write(output.pop()+"\n")
+                values[5] = ''
+                print(values)
+        else:
+            values[5] = ''
+            print(values)
 
 nodefinal()
 
 filegraph.write('\n')
 
-connects.append('    %s -> nodefin' % (seqnamelst))
+connects.append('    %s -> nodefin' % (values[1]))
 
 connects.reverse()
 while len(connects) :
