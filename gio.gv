@@ -36,5 +36,6 @@ digraph R {
             label=""
             ]
 
+    nodeini -> node001
     node003 -> nodefin
 }

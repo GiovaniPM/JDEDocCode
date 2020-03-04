@@ -1,4 +1,5 @@
-﻿VA evt_cSeparador_EV01 [EV01] = ","
+﻿! Teste
+VA evt_cSeparador_EV01 [EV01] = ","
 VA evt_mnTamanho_IA05 [IA05] = length([BF szValor [RMK]])
 VA evt_mnPosicao_IA05 [IA05] = "0"
 VA evt_mnTamanhoData_IA05 [IA05] = 10

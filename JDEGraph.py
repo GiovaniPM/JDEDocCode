@@ -73,6 +73,14 @@ def preparestring(label):
     label = label.replace(r'<',r"\<")
     return label
 
+def connectnode(typenode,nodeanterior,node):
+    if typenode == 'S':
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]' % (nodeanterior,node))
+    elif typenode == 'N':
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="red", color="red:yellow:red", label="Nao"]' % (nodeanterior,node))
+    else:
+        connects.append('    %s -> %s' % (nodeanterior,node))
+
 def nodeinitial():
     filegraph.write('    nodeini [\n')
     filegraph.write('            shape=circle,\n')
@@ -138,13 +146,13 @@ for line in filejde:
     if len(lineatual) > 2 and lineatual[0:1] != "!":
         if len(lineatual) == 81 and lineatual == '-' * 81:
             sequence = str(values[4])
-        elif len(lineatual) == 45 and lineatual == '=' * 45:
+        elif len(lineatual) == 45 and lineatual == '=' * 45:    
             sequence = str(values[4])
         elif len(lineatual) == 53 and lineatual == '=' * 53:
             sequence = str(values[4])
         elif len(lineatual) == 40 and lineatual == '-' * 40:
             sequence = str(values[4])
-        elif len(lineatual) == 2 and lineatual == '//':
+        elif lineatual == '//':
             sequence = str(values[4])
         elif lineatual in ignore:
             sequence = str(values[4])
@@ -172,7 +180,8 @@ nodefinal()
 
 filegraph.write('\n')
 
-connects.append('    %s -> nodefin' % (values[1]))
+connectnode('','nodeini','node001')
+connectnode('',values[1],'nodefin')
 
 connects.reverse()
 while len(connects) :
