@@ -1,0 +1,41 @@
+digraph R {
+    nodeini [
+            shape=circle,
+            style="filled",
+            fillcolor="white:lightgreen",
+            label=""
+            ]
+    node001 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="node001|{BF szTipo [SPHD] is equal to 'S'}"
+            ]
+    node002 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="node002|{BF szOperador [RMK] is equal to '='\nAnd BF szEntradaString [DL011] is equal to BF szValor [RMK]}"
+            ]
+    node003 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="node003|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF szEntradaString [DL011] is not equal to BF szValor [RMK]}"
+            ]
+    nodefin [
+            shape=circle,
+            style="filled",
+            fillcolor="white:#ee636e",
+            label=""
+            ]
+
+    nodeini -> node001
+    node003 -> nodefin
+}
