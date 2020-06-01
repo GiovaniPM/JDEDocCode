@@ -1,5 +1,5 @@
 digraph R {
-    nodeini [
+    node000 [
             shape=circle,
             style="filled",
             fillcolor="white:lightgreen",
@@ -9,9 +9,9 @@ digraph R {
             fontname="Arial",
             fontsize=6,
             shape=record,
-            style="diagonals,filled",
-            fillcolor="white:#fbfbb1"
-            label="node001|{BF szTipo [SPHD] is equal to 'S'}"
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node001|{\nVA evt_cSeparador_EV01 [EV01] = ','\nVA evt_mnTamanho_IA05 [IA05] = length([BF szValor [RMK]])\nVA evt_mnPosicao_IA05 [IA05] = '0'\nVA evt_mnTamanhoData_IA05 [IA05] = 10\nBF cRetorno [EV01] = '0'}"
             ]
     node002 [
             fontname="Arial",
@@ -19,7 +19,7 @@ digraph R {
             shape=record,
             style="diagonals,filled",
             fillcolor="white:#fbfbb1"
-            label="node002|{BF szOperador [RMK] is equal to '='\nAnd BF szEntradaString [DL011] is equal to BF szValor [RMK]}"
+            label="node002|{BF szTipo [SPHD] is equal to 'S'}"
             ]
     node003 [
             fontname="Arial",
@@ -27,15 +27,65 @@ digraph R {
             shape=record,
             style="diagonals,filled",
             fillcolor="white:#fbfbb1"
-            label="node003|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF szEntradaString [DL011] is not equal to BF szValor [RMK]}"
+            label="node003|{BF szOperador [RMK] is equal to '='\nAnd BF szEntradaString [DL011] is equal to BF szValor [RMK]}"
             ]
-    nodefin [
+    node004 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node004|{BF cRetorno [EV01] = '1'}"
+            ]
+    node005 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="node005|{BF szOperador [RMK] is equal to '\<\>'\nAnd BF szEntradaString [DL011] is not equal to BF szValor [RMK]}"
+            ]
+    node006 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node006|{BF cRetorno [EV01] = '2'}"
+            ]
+    node007 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node007|{BF cRetorno [EV01] = '3'}"
+            ]
+    node008 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node008|{BF cRetorno [EV01] = '4'}"
+            ]
+    node999 [
             shape=circle,
             style="filled",
             fillcolor="white:#ee636e",
             label=""
             ]
 
-    nodeini -> node001
-    node003 -> nodefin
+    node007 -> node999
+    node006 -> node999
+    node005 -> node007 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
+    node005 -> node006 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
+    node004 -> node999
+    node003 -> node005 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
+    node003 -> node004 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
+    node002 -> node008 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
+    node002 -> node003 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
+    node001 -> node002
+    node008 -> node999
+    node000 -> node001
 }

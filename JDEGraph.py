@@ -4,9 +4,16 @@ import re
 import string
 import sys
 import unicodedata
+import os
+
+#c:\Python38\python.exe JDEGraph.py gio.txt d
 
 namefilejde    = sys.argv[1]
 namefilefgraph = os.path.splitext(sys.argv[1])[0]+".gv"
+if len(sys.argv) == 3:
+    modo       = sys.argv[2]
+else:
+    modo       = ''
 # namefilejde    = 'c:/Users/giovani_mesquita/projetos/JDEDocCode/N554308.txt'
 # namefilefgraph = 'c:/Users/giovani_mesquita/projetos/JDEDocCode/N554308.gv'
 
@@ -19,7 +26,8 @@ stack     = []
 connects  = []
 output    = []
 qif       = []
-qwhere    = []
+qwhile    = []
+qother    = []
 values    = ['','','','',0,'',0]
 valuesant = ['','','','',0,'',0]
 tokens    = ['If',
@@ -38,7 +46,7 @@ plsql     = ['Select',
              'FetchNext',
              'FetchSingle']
 values[0] = ''        # node
-values[1] = 'nodeini' # lastnode
+values[1] = 'node000' # lastnode
 values[2] = ''        # cmd
 values[3] = ''        # lastcmd
 values[4] = 1         # sequencial
@@ -75,14 +83,14 @@ def preparestring(label):
 
 def connectnode(typenode,nodeanterior,node):
     if typenode == 'S':
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="green", color="green:yellow:green", label="Sim"]' % (nodeanterior,node))
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]' % (nodeanterior,node))
     elif typenode == 'N':
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 12, fontcolor="red", color="red:yellow:red", label="Nao"]' % (nodeanterior,node))
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]' % (nodeanterior,node))
     else:
         connects.append('    %s -> %s' % (nodeanterior,node))
 
 def nodeinitial():
-    filegraph.write('    nodeini [\n')
+    filegraph.write('    node000 [\n')
     filegraph.write('            shape=circle,\n')
     filegraph.write('            style="filled",\n')
     filegraph.write('            fillcolor="white:lightgreen",\n')
@@ -90,7 +98,7 @@ def nodeinitial():
     filegraph.write('            ]\n')
 
 def nodefinal():
-    filegraph.write('    nodefin [\n')
+    filegraph.write('    node999 [\n')
     filegraph.write('            shape=circle,\n')
     filegraph.write('            style="filled",\n')
     filegraph.write('            fillcolor="white:#ee636e",\n')
@@ -108,6 +116,17 @@ def nodeif(seq,label):
     filegraph.write('            label="%s|{%s}"\n' % (seq,label))
     filegraph.write('            ]\n')
 
+def nodewhile(seq,label):
+    label = preparestring(label)
+    filegraph.write('    %s [\n' % (seq))
+    filegraph.write('            fontname="Arial",\n')
+    filegraph.write('            fontsize=6,\n')
+    filegraph.write('            shape=record,\n')
+    filegraph.write('            style="diagonals,filled",\n')
+    filegraph.write('            fillcolor="white:orange"\n')
+    filegraph.write('            label="%s|{%s}"\n' % (seq,label))
+    filegraph.write('            ]\n')
+
 def nodeattrib(seq,label):
     label = preparestring(label)
     filegraph.write('    %s [\n' % (seq))
@@ -119,17 +138,39 @@ def nodeattrib(seq,label):
     filegraph.write('            label="%s|{%s}"\n' % (seq,label))
     filegraph.write('            ]\n')
 
+def printdebug(args):
+    if modo == 'd' or modo == 'D':
+        print(">>> ",args)    
+
 def printnode(args):
-    if args[3] == 'If' and args[2] not in ['And','Or']:
+    if args[3] in ['If'] and args[2] not in ['And','Or']:
         nodeif(args[0],args[5])
         args[1] = args[0]
         args[4] += 1
+        args[5] = ''
+    elif args[3] in ['While'] and args[2] not in ['And','Or']:
+        nodewhile(args[0],args[5])
+        args[1] = args[0]
+        args[4] += 1
+        args[5] = ''
+    elif args[3] not in tokens and args[2] in tokens:
+        nodeattrib(args[0],args[5])
+        args[1] = args[0]
+        args[4] += 1
+        args[5] = ''
 
 filegraph.write('digraph R {\n')
 
 nodeinitial()
 
+if modo == 'd' or modo == 'D':
+    os.system("cls")
+
+if modo == 'd' or modo == 'D':
+    print(">>>  actualnode[0], lastnode[1], actualcmd[2], lastcmd[3], sequencial[4], text[5], words[6]")
+
 for line in filejde:
+
     if values[3] in ['If','Where'] and values[2] in ['And','Or']:
         values[3] = values[3]
     else:
@@ -138,9 +179,12 @@ for line in filejde:
     lineatual = formatline(line)
     values[2] = linecommand(lineatual)
 
+    if modo == 'd' or modo == 'D':
+        print("\033[1;32;40m",lineatual,"\033[0;37;40m")
+
     printnode(values)
 
-    values[6] = lineatual.count(' ')
+    values[6] = lineatual.count(' ') + 1
     values[0] = 'node%s' % (str(values[4]).rjust(3, '0'))
 
     if len(lineatual) > 2 and lineatual[0:1] != "!":
@@ -159,33 +203,65 @@ for line in filejde:
         elif values[2] in tokens:
             if values[2] in ['If']:
                 values[5] = restline(values[2],lineatual)
-                print(values)
+                qif.append(values[0])
+                printdebug(values)
+            elif values[2] in ['While']:
+                values[5] = restline(values[2],lineatual)
+                qwhile.append(values[0])
+                printdebug(values)
             elif values[2] in ['Else']:
                 values[5] = ''
-                print(values)
+                printdebug(values)
             elif values[2] in ['And','Or']:
                 values[5]  += r'\n' + lineatual
-                print(values)
-            elif values[2] in ['Enf If']:
+                printdebug(values)
+            elif values[2] in ['End If']:
                 values[5] = ''
-                print(values)
+                printdebug(values)
+            elif values[2] in ['End While']:
+                values[5] = ''
+                printdebug(values)
             else:
                 values[5] = ''
-                print(values)
+                printdebug(values)
         else:
-            values[5] = ''
-            print(values)
+            if values[5] == '' and values[3] in tokens:
+                values[5] = lineatual
+            else:
+                values[5]  += r'\n' + lineatual
+                printdebug(values)
+
+        if values[2] in tokens and values[3] not in tokens:
+            qother.append(values[1])
 
 nodefinal()
 
 filegraph.write('\n')
 
-connectnode('','nodeini','node001')
-connectnode('',values[1],'nodefin')
+connectnode('','node000','node001')
+connectnode('',values[1],'node999')
 
-connects.reverse()
-while len(connects) :
-    filegraph.write(connects.pop()+"\n")
+connectnode('','node001','node002')
+connectnode('S','node002','node003')
+connectnode('N','node002','node008')
+connectnode('S','node003','node004')
+connectnode('N','node003','node005')
+connectnode('','node004','node999')
+connectnode('S','node005','node006')
+connectnode('N','node005','node007')
+connectnode('','node006','node999')
+connectnode('','node007','node999')
+
+print('\n')
+while len(connects):
+    linha = connects.pop()
+    print("\033[1;35;40m",linha,"\033[0;37;40m")
+    filegraph.write(linha+"\n")
+
+print('\n')
+print("\033[1;34;40m",'IF    =',qif,"\033[0;37;40m")
+print("\033[1;34;40m",'WHILE =',qwhile,"\033[0;37;40m")
+print("\033[1;34;40m",'OTHER =',qother,"\033[0;37;40m")
 
 filegraph.write('}')
 

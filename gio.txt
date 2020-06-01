@@ -17,4 +17,6 @@ If BF szTipo [SPHD] is equal to "S"
                BF cRetorno [EV01] = "3"
           End If
      End If
+Else
+     BF cRetorno [EV01] = "4"
 End If
