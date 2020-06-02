@@ -13,10 +13,16 @@ If BF szTipo [SPHD] is equal to "S"
           If BF szOperador [RMK] is equal to "<>"
           And BF szEntradaString [DL011] is not equal to BF szValor [RMK]
                BF cRetorno [EV01] = "2"
+               If BF szOperador [RMK] is equal to ">="
+                   VA evt_mnPosicao_IA05 [IA05] = "1"
+               Else
+                   VA evt_mnPosicao_IA05 [IA05] = "2"
+               End If
           Else
                BF cRetorno [EV01] = "3"
           End If
      End If
 Else
      BF cRetorno [EV01] = "4"
+     VA evt_cSeparador_EV01 [EV01] = ","
 End If

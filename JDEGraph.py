@@ -83,9 +83,9 @@ def preparestring(label):
 
 def connectnode(typenode,nodeanterior,node):
     if typenode == 'S':
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]' % (nodeanterior,node))
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="green", color="green", label="Yes"]' % (nodeanterior,node))
     elif typenode == 'N':
-        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]' % (nodeanterior,node))
+        connects.append('    %s -> %s [fontname = "Arial", fontsize = 10, fontcolor="red", color="red", label="No"]' % (nodeanterior,node))
     else:
         connects.append('    %s -> %s' % (nodeanterior,node))
 
@@ -212,12 +212,19 @@ for line in filejde:
             elif values[2] in ['Else']:
                 values[5] = ''
                 printdebug(values)
+                nodefrom = qif.pop()
+                if modo == 'd' or modo == 'D':
+                    print("\033[1;31;40m",'N ',nodefrom,' -- ',values[0],"\033[0;37;40m")
+                qif.append(nodefrom)
             elif values[2] in ['And','Or']:
                 values[5]  += r'\n' + lineatual
                 printdebug(values)
             elif values[2] in ['End If']:
                 values[5] = ''
                 printdebug(values)
+                # nodefrom = qif.pop()
+                # if modo == 'd' or modo == 'D':
+                #     print("\033[1;31;40m",'S ',nodefrom,' -- ',values[1],"\033[0;37;40m")
             elif values[2] in ['End While']:
                 values[5] = ''
                 printdebug(values)
@@ -233,35 +240,43 @@ for line in filejde:
 
         if values[2] in tokens and values[3] not in tokens:
             qother.append(values[1])
+            # if modo == 'd' or modo == 'D':
+            #     print("\033[1;31;40m",'  ',values[1],' -- ','node999',"\033[0;37;40m")
 
 nodefinal()
 
 filegraph.write('\n')
 
+# Fixed
 connectnode('','node000','node001')
 connectnode('',values[1],'node999')
 
 connectnode('','node001','node002')
 connectnode('S','node002','node003')
-connectnode('N','node002','node008')
+connectnode('N','node002','node011')
 connectnode('S','node003','node004')
 connectnode('N','node003','node005')
 connectnode('','node004','node999')
 connectnode('S','node005','node006')
-connectnode('N','node005','node007')
-connectnode('','node006','node999')
-connectnode('','node007','node999')
+connectnode('N','node005','node010')
+connectnode('','node006','node007')
+connectnode('S','node007','node008')
+connectnode('N','node007','node009')
+connectnode('','node008','node999')
+connectnode('','node009','node999')
+connectnode('','node010','node999')
 
-print('\n')
-while len(connects):
-    linha = connects.pop()
-    print("\033[1;35;40m",linha,"\033[0;37;40m")
-    filegraph.write(linha+"\n")
-
-print('\n')
-print("\033[1;34;40m",'IF    =',qif,"\033[0;37;40m")
-print("\033[1;34;40m",'WHILE =',qwhile,"\033[0;37;40m")
-print("\033[1;34;40m",'OTHER =',qother,"\033[0;37;40m")
+if modo == 'd' or modo == 'D':
+    print('\n')
+    print("\033[1;34;40m",'IF    =',qif,"\033[0;37;40m")
+    print("\033[1;34;40m",'WHILE =',qwhile,"\033[0;37;40m")
+    print("\033[1;34;40m",'OTHER =',qother,"\033[0;37;40m")
+    
+    print('\n')
+    while len(connects):
+        linha = connects.pop()
+        print("\033[1;35;40m",linha,"\033[0;37;40m")
+        filegraph.write(linha+"\n")
 
 filegraph.write('}')
 

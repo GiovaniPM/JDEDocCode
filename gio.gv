@@ -57,9 +57,9 @@ digraph R {
             fontname="Arial",
             fontsize=6,
             shape=record,
-            style="filled",
-            fillcolor="white:lightblue"
-            label="node007|{BF cRetorno [EV01] = '3'}"
+            style="diagonals,filled",
+            fillcolor="white:#fbfbb1"
+            label="node007|{BF szOperador [RMK] is equal to '\>='}"
             ]
     node008 [
             fontname="Arial",
@@ -67,7 +67,31 @@ digraph R {
             shape=record,
             style="filled",
             fillcolor="white:lightblue"
-            label="node008|{BF cRetorno [EV01] = '4'}"
+            label="node008|{VA evt_mnPosicao_IA05 [IA05] = '1'}"
+            ]
+    node009 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node009|{VA evt_mnPosicao_IA05 [IA05] = '2'}"
+            ]
+    node010 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node010|{BF cRetorno [EV01] = '3'}"
+            ]
+    node011 [
+            fontname="Arial",
+            fontsize=6,
+            shape=record,
+            style="filled",
+            fillcolor="white:lightblue"
+            label="node011|{BF cRetorno [EV01] = '4'\nVA evt_cSeparador_EV01 [EV01] = ','}"
             ]
     node999 [
             shape=circle,
@@ -76,16 +100,20 @@ digraph R {
             label=""
             ]
 
-    node007 -> node999
-    node006 -> node999
-    node005 -> node007 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
-    node005 -> node006 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
-    node004 -> node999
-    node003 -> node005 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
-    node003 -> node004 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
-    node002 -> node008 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red:yellow:red", label="No"]
-    node002 -> node003 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green:yellow:green", label="Yes"]
-    node001 -> node002
+    node010 -> node999
+    node009 -> node999
     node008 -> node999
+    node007 -> node009 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red", label="No"]
+    node007 -> node008 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green", label="Yes"]
+    node006 -> node007
+    node005 -> node010 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red", label="No"]
+    node005 -> node006 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green", label="Yes"]
+    node004 -> node999
+    node003 -> node005 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red", label="No"]
+    node003 -> node004 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green", label="Yes"]
+    node002 -> node011 [fontname = "Arial", fontsize = 10, fontcolor="red", color="red", label="No"]
+    node002 -> node003 [fontname = "Arial", fontsize = 10, fontcolor="green", color="green", label="Yes"]
+    node001 -> node002
+    node011 -> node999
     node000 -> node001
 }
