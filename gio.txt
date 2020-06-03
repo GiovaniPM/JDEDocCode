@@ -16,7 +16,11 @@ If BF szTipo [SPHD] is equal to "S"
                If BF szOperador [RMK] is equal to ">="
                    VA evt_mnPosicao_IA05 [IA05] = "1"
                Else
-                   VA evt_mnPosicao_IA05 [IA05] = "2"
+                   If BF szOperador [RMK] is equal to "<="
+                       VA evt_mnPosicao_IA05 [IA05] = "2"
+                   Else
+                       VA evt_mnPosicao_IA05 [IA05] = "8"
+                   End If
                End If
           Else
                BF cRetorno [EV01] = "3"
@@ -26,3 +30,14 @@ Else
      BF cRetorno [EV01] = "4"
      VA evt_cSeparador_EV01 [EV01] = ","
 End If
+VA evt_cOi_EV01 [EV01] = "N"
+If BF szTipo [SPHD] is equal to "Z"
+    VA Casa = 1
+Else
+    VA Lago = 1
+End If
+!If BF szTipo [SPHD] is equal to "R"
+!    VA Casa = 2
+!Else
+!    VA Lago = 2
+!End If
