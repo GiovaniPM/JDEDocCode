@@ -1,0 +1,23 @@
+﻿               F00092.Update  [Index 5: UniqueID]
+                    VA evt_szNEW_SDB [SDB] -> TK Supplemental Database Code [SDB]
+                    VA evt_szNEW_TYDT [TYDT] -> TK Type Data [TYDT]
+                    VA evt_mnOLD_UKID [UKID] = TK Unique Key ID (Internal) [UKID]
+                    VA evt_jdNEW_EFT [EFT] -> TK Date - Effective [EFT]
+                    VA evt_szNEW_KY [KY] -> TK User Defined Code [KY]
+                    VA evt_jdNEW_EFTE [EFTE] -> TK Date - Ending Effective [EFTE]
+                    VA evt_szNEW_RMK [RMK] -> TK Name - Remark [RMK]
+                    VA evt_szNEW_RMK2 [RMK2] -> TK Name - Remark [RMK2]
+                    VA evt_szNEW_USER [USER] -> TK User ID [USER]
+                    VA evt_szNEW_PID [PID] -> TK Program ID [PID]
+                    VA evt_szNEW_JOBN [JOBN] -> TK Work Station ID [JOBN]
+                    VA evt_jdNEW_UPMJ [UPMJ] -> TK Date - Updated [UPMJ]
+                    VA evt_mnNEW_UPMT [UPMT] -> TK Time of Day [TDAY]
+                    VA evt_szNEW_RMK3 [RMK3] -> TK Text Remark [RMK3]
+If VA evt_mnTamanho_IA05 [IA05] is equal to "0"
+     BF cResultado [EV01] = "E"
+Else
+     BF cResultado [EV01] = substr([BF szRegra [DL011]], "0", "1")
+End If
+               F00092.Update  [Index 5: UniqueID]
+                    VA evt_szNEW_SDB [SDB] -> TK Supplemental Database Code [SDB]
+                    VA evt_szNEW_TYDT [TYDT] -> TK Type Data [TYDT]

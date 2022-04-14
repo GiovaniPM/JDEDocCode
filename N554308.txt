@@ -590,6 +590,3 @@ If VA evt_mnTamanho_IA05 [IA05] is equal to "0"
 Else
      BF cResultado [EV01] = substr([BF szRegra [DL011]], "0", "1")
 End If
-
-
-
